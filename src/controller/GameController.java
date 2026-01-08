@@ -17,14 +17,17 @@ public class GameController {
 
 	private GameState gameState;
 
-	public GameController(Game game, GameViewable gameViewable) {
-		this.deck = game.getDeck();
-		this.gameViewables = new GameViewables();
-		gameState = GameState.AddingPlayer;
-		this.players = new ArrayList<>();
-		this.gameEvaluator = game.getGe();
-		runOneStep();
-	}
+    public GameController(Game game, GameViewable gameViewable) {
+        this.deck = game.getDeck();
+        this.gameViewables = new GameViewables();
+        this.gameViewables.addGameViewable(gameViewable);
+        gameViewable.setController(this);
+
+        this.gameState = GameState.AddingPlayer;
+        this.players = new ArrayList<>();
+        this.gameEvaluator = game.getGe();
+        runOneStep();
+    }
 
 	public void runOneStep() {
 		switch (gameState) {
@@ -34,20 +37,19 @@ public class GameController {
 		}
 	}
 
-	public void addPlayer(String name) {
-		if (gameState == GameState.CardDealt) {
-			throw new RuntimeException("Game has already started");
-		}
+    public void addPlayer(String name) {
+        if (gameState != GameState.AddingPlayer || players.size() >= 5) {
+            return;
+        }
 
-		players.add(new Player(name));
+        players.add(new Player(name));
 
-		for (int i = 0; i < players.size(); i++) {
-			gameViewables.showPlayerName(i, players.get(i).getName());
-		}
+        for (int i = 0; i < players.size(); i++) {
+            gameViewables.showPlayerName(i, players.get(i).getName());
+        }
 
-		gameState = GameState.AddingPlayer;
-		runOneStep();
-	}
+        runOneStep();
+    }
 
 	public void startGame() {
 		deck.shuffle();

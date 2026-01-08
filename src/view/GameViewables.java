@@ -4,7 +4,7 @@ import controller.GameController;
 
 import java.util.ArrayList;
 
-public class GameViewables extends GameViewable {
+public class GameViewables implements GameViewable {
 	public ArrayList<GameViewable> gameViewables;
 
 	public GameViewables() {
